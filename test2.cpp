@@ -496,3 +496,326 @@ int main()
 
 	return 0;
 }
+
+using namespace std;
+
+//class Date
+//{
+//public:
+//	// 1.无参构造函数
+//	//Date()
+//	//{}
+//
+//	// 2.带参构造函数
+//	Date(int year = 1, int month = 1, int day = 1)
+//	{
+//		_year = year;
+//		_month = month;
+//		_day = day;
+//	}
+//private:
+//	int _year;
+//	int _month;
+//	int _day;
+//};
+
+typedef int DataType;
+class Stack
+{
+public:
+	Stack(int capacity = 4)
+	{
+		_array = (DataType*)malloc(sizeof(DataType) * capacity);
+		if (NULL == _array)
+		{
+			printf("malloc fail\n");
+			return;
+		}
+
+		_size = 0;
+		_capacity = capacity;
+	}
+
+	void Push(DataType data)
+	{
+		// CheckCapacity();
+		_array[_size] = data;
+		_size++;
+	}
+
+	// 需要显示写，需要手动释放资源
+	~Stack()
+	{
+		cout << "~Stack()->" << _array << endl;
+		free(_array);
+		_capacity = _size = 0;
+		_array = nullptr;
+	}
+private:
+	DataType* _array;
+};
+
+class Time
+{
+public:
+	Time(int hour)
+	{
+		cout << "Time()" << endl;
+		_hour = 0;
+		_minute = 0;
+		_second = 0;
+	}
+private:
+	int _hour;
+	int _minute;
+	int _second;
+};
+
+class Date
+{
+public:
+	//不写，默认生成构造函数
+private:
+	// 基本类型（内置类型）
+	int _year;
+	int _month;
+	int _day;
+
+	// 自定义类型
+	//Time* _t; //指针都是内置类型
+	Time _t;
+};
+
+int main()
+{
+	Date d1;  // 调用存在歧义/二义性
+	//调用默认构造函数
+	Date d2(2022, 7, 23);
+	func();
+
+	return 0;
+}
+
+//总结：
+//1、一般的类都不会让编译器默认生成构造函数，都会自己写。显示写一个全缺省，非常好用。
+//2. 特殊情况才会默认生成
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class MyQueue {
+public:
+	void push(int x){}
+	//...
+
+	// 不需要写，默认生成就够用。但是默认生成对于Stack自定义成员，调用Stack析构函数
+private:
+	size_t _size = 0;
+	Stack _st1;
+	Stack _st2;
+};
+
+class Date
+{
+public:
+	int IsLeapYear(int year)
+	{
+		if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+			return true;
+	}
+
+	int GetMonthDay(int year, int month)
+	{
+		static int days[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
+
+		if (month == 2 && IsLeapYear(year))
+		{
+			return 29;
+		}
+		else
+		{
+			return days[month];
+		}
+	}
+
+	Date(int year = 1, int month = 1, int day = 1)
+	{
+		_year = year;
+		_month = month;
+		_day = day;
+	}
+
+	// 不需要写，默认生成就够用。但是默认生成的也没做什么事情
+	//~Date()
+	//{
+	//	//~Date()没有什么需要清理
+	//	cout << "~Dete()" << endl;
+	//}
+
+	//拷贝构造
+	Date(const Date& d)
+	{
+		cout << "Date(Date& d)" << endl;
+		_year = d._year;
+		_month = d._month;
+		_day = d._day;
+	}
+
+	//指针不方便
+	Date(Date* d)
+	{
+		cout << "Date(Date& d)" << endl;
+		_year = d->_year;
+		_month = d->_month;
+		_day = d->_day;
+	}
+
+	//int GetYear()
+	//{
+	//	return _year;
+	//}
+
+	//bool operator == (const Date& x)
+	//{
+	//	return _year == x._year
+	//		&& _month == x._month
+	//		&& _day == x._day;
+	//}
+	Date operator+(int day)
+	{
+		Date ret(*this);
+		ret._day += day;
+		while (ret._day > GetMonthDay(ret._year, ret._month))
+		{
+			ret._day -= GetMonthDay(ret._year, ret._month);
+			++ret._month;
+			{
+				if (ret._month == 13)
+				{
+					ret._month = 1;
+					ret._year++;
+				}
+			}
+
+			return ret;
+		}
+	}
+	 
+private:
+	int _year;
+	int _month;
+	int _day;
+};
+
+void get1(Date d)
+{
+
+}
+
+void get2(Date& d)
+{
+
+}
+
+void func()
+{
+	Date d;
+	Stack st;
+	MyQueue q; 
+
+	Date d1(2022, 7, 23);
+	Date d2(d1);
+
+	Stack st1;
+	Stack st2(st1);
+
+	//Date d3 = d1;
+
+	Date d4(&d1);
+	Date d5 = &d1;
+
+	int i = 0;
+	int j = i;
+
+	// 1 3 2 6 7 下标路径
+	// 打印一下路径
+	Stack path;
+	Stack copy(path);
+	while (!copy.Empty())
+	{
+		cout << copy.Top() << endl;
+		copy.Pop();
+	}
+
+	
+}
+
+
+//int DateEqual(Date x1, Date x2)
+//{
+//	return x1._year == x2._year
+//		&& x1._month == x2._month
+//		&& x1._day == x2._day;
+//}
+
+//int main()
+//{
+//	Date d1(2022, 7, 23);
+//	Date d2(2022, 7, 24);
+//
+//	// 内置类型可以直接使用运算符运算，编译器知道要如何运算
+//	// 自定义类型无法直接使用运算符，编译器也不知道要如何运算。想支持，自己实现运算符重载即可
+//	cout << d1.operator==(d2) << endl;
+//	cout << (d1 == d2) << endl;
+//
+//	//d1 < d2;
+//	//d1++;
+//	//d1 + 100;
+//	//Date d3(2020, 10, 1);
+//	//d3 - d2;
+//
+//	//int i;
+//	//MyQueue 用默认生成构造函数就挺好，不需要显示写
+//	//MyQueue q;
+//	//func();
+//
+//	return 0;
+//}
+
+//运算符重载
+int main()
+{
+	Date d1(2022, 7, 23);
+	Date d2(2022, 7, 24);
+	d1 == d2;
+	//d1 < d2;
+	d1++;
+	Date ret = d1 + 50;
+//Date ret(d1 + 50)
+	d1 += 50;
+
+	Date(2020, 10, 1);
+	d3 - d2;
+
+	return 0;
+}
