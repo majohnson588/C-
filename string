@@ -1,0 +1,126 @@
+{ // storage for small buffer or pointer to larger one
+	value_type _Buf[_BUF_SIZE];
+	pointer _Ptr;
+	char _Alias[_BUF_SIZE]; // to permit aliasing
+} _Bx;
+
+void Teststring()
+{
+	string s1; // 构造空的string类对象s1
+	string s2("hello bit"); // 用C格式字符串构造string类对象s2
+	string s3(s2); // 拷贝构造s3
+}
+
+struct _Rep_base
+{
+	size_type _M_length;
+	size_type _M_capacity;
+	_Atomic_word _M_refcount;
+};
+
+class Solution {
+public:
+	bool isLetter(char ch)
+	{
+		if (ch >= 'a' && ch <= 'z')
+			return true;
+		if (ch >= 'A' && ch <= 'Z')
+			return true;
+		return false;
+	}
+	string reverseOnlyLetters(string S) {
+		if (S.empty())
+			return S;
+
+		size_t begin = 0, end = S.size() - 1;
+		while (begin < end)
+		{
+			while (begin < end && !isLetter(S[begin]))
+				++begin;
+
+			while (begin < end && !isLetter(S[end]))
+				--end;
+			swap(S[begin], S[end]);
+			++begin;
+			--end;
+		}
+		return S;
+	}
+};
+
+class Solution {
+public:
+	int firstUniqChar(string s) {
+
+		// 统计每个字符出现的次数
+		int count[256] = { 0 };
+		int size = s.size();
+		for (int i = 0; i < size; ++i)
+			count[s[i]] += 1;
+
+		// 按照字符次序从前往后找只出现一次的字符
+		for (int i = 0; i < size; ++i)
+			if (1 == count[s[i]])
+				return i;
+
+		return -1;
+	}
+};
+
+#include<iostream>
+#include<string>
+using namespace std;
+int main()
+{
+	string line;
+	// 不要使用cin>>line,因为会它遇到空格就结束了
+	// while(cin>>line)
+	while (getline(cin, line))
+	{
+		size_t pos = line.rfind(' ');
+		cout << line.size() - pos - 1 << endl;
+	}
+	return 0;
+}
+
+class Solution {
+public:
+	bool isLetterOrNumber(char ch)
+	{
+		return (ch >= '0' && ch <= '9')
+			|| (ch >= 'a' && ch <= 'z')
+			|| (ch >= 'A' && ch <= 'Z');
+	}
+
+	bool isPalindrome(string s) {
+		// 先小写字母转换成大写，再进行判断
+		for (auto& ch : s)
+		{
+			if (ch >= 'a' && ch <= 'z')
+				ch -= 32;
+		}
+
+		int begin = 0, end = s.size() - 1;
+		while (begin < end)
+		{
+			while (begin < end && !isLetterOrNumber(s[begin]))
+				++begin;
+
+			while (begin < end && !isLetterOrNumber(s[end]))
+				--end;
+
+			if (s[begin] != s[end])
+			{
+				return false;
+			}
+			else
+			{
+
+				++begin;
+				--end;
+			}
+		}
+
+		return true;
+	}
+};
