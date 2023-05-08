@@ -124,3 +124,138 @@ public:
 		return true;
 	}
 };
+
+class Solution {
+public:
+	string addstrings(string num1, string num2)
+	{
+		// 从后往前相加，相加的结果到字符串可以使用insert头插
+		// 或者+=尾插以后再reverse过来
+		int end1 = num1.size() - 1;
+		int end2 = num2.size() - 1;
+		int value1 = 0, value2 = 0, next = 0;
+		string addret;
+		while (end1 >= 0 || end2 >= 0)
+		{
+			if (end1 >= 0)
+				value1 = num1[end1--] - '0';
+			else
+				value1 = 0;
+
+			if (end2 >= 0)
+				value2 = num2[end2--] - '0';
+			else
+				value2 = 0;
+
+			int valueret = value1 + value2 + next;
+			if (valueret > 9)
+			{
+				next = 1;
+				valueret -= 10;
+			}
+			else
+			{
+				next = 0;
+			}
+
+			//addret.insert(addret.begin(), valueret+'0');
+			addret += (valueret + '0');
+		}
+
+		if (next == 1)
+		{
+			//addret.insert(addret.begin(), '1');
+			addret += '1';
+		}
+
+		reverse(addret.begin(), addret.end());
+		return addret;
+	}
+}
+
+// 为了和标准库区分，此处使用String
+class String
+{
+public:
+	/*String()
+ :_str(new char[1])
+ {*_str = '\0';}
+ */
+ //String(const char* str = "\0") 错误示范
+ //String(const char* str = nullptr) 错误示范
+	String(const char* str = "")
+	{
+		// 构造String类对象时，如果传递nullptr指针，可以认为程序非
+		if (nullptr == str)
+		{
+			assert(false);
+			return;
+		}
+		_str = new char[strlen(str) + 1];
+		strcpy(_str, str);
+	}
+	~String()
+	{
+		if (_str)
+		{
+			delete[] _str;
+			_str = nullptr;
+		}
+	}
+private:
+	char* _str;
+};
+// 测试
+void TestString()
+{
+	String s1("hello bit!!!");
+	String s2(s1);
+}
+
+class String
+{
+public:
+	String(const char* str = "")
+	{
+		if (nullptr == str)
+		{
+			assert(false);
+			return;
+		}
+		_str = new char[strlen(str) + 1];
+		strcpy(_str, str);
+	}
+	String(const String& s)
+		: _str(nullptr)
+	{
+		String strTmp(s._str);
+		swap(_str, strTmp._str);
+	}
+	// 对比下和上面的赋值那个实现比较好？
+	String& operator=(String s)
+	{
+		swap(_str, s._str);
+		return *this;
+	}
+	/*
+	String& operator=(const String& s)
+	{
+	if(this != &s)
+	{
+	String strTmp(s);
+	swap(_str, strTmp._str);
+	}
+	return *this;
+ }
+ */
+	~String()
+	{
+		if (_str)
+		{
+			delete[] _str;
+			_str = nullptr;
+		}
+	}
+private:
+	char* _str;
+};
